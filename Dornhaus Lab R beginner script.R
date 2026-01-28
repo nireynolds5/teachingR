@@ -97,3 +97,5 @@ stripchart(avgsize ~ treatment
 )
 
 
+
+
