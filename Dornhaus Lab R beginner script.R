@@ -15,18 +15,18 @@ library(scales)  # for number_format & color scales
 library(viridis)
 
 # Graphics setup -----------------------------
-
+no_categories <- 6
 ## Colorpalette
 twogroupcolors <- c("#5a9a8f", "#7b6ea8")
 threegroupcolors <- viridis(3)
-severalcategories_colors <- magma(6)
+severalcategories_colors <- magma(no_categories)
 
 ## Similar to colors, it often makes sense to define some other things
 ## universally for all your plots, e.g. margins, where the sample sizes
 ## are plotted, y-axis range. This depends on your figures though.
 y_max <- 6
 y_min <- 0
-N_y_offset <- y_max * 0.95 # This puts sample size numbers 5% below max, for example
+N_y_offset <- 0.95 # This puts sample size numbers 5% below max, for example
 
 
 
@@ -57,7 +57,8 @@ boxplot(avgsize ~ treatment
 # Add data points
 
 # Margins:
-par(oma = c(0,0,0,0), mar = c(3,5,1,1), mgp=c(4, 1, 0), las=1) # bottom, left, top, right
+par(oma = c(2,2,2,2), mar = c(4,4,1,1), mgp=c(3, 1, 0), las=1) 
+# bottom, left, top, right
 par(mfrow=c(1,1))
 
 # How to make a great boxplot -
@@ -79,11 +80,14 @@ Nice_Plot <- boxplot(avgsize ~ treatment
 nbGroup <- nlevels(as.factor(Nice_Plot$names)) # this is just a way to extract
 # category names from the plot - you could get this directly from data
 text(x=c(1:nbGroup) 
-  , y=N_y_offset
+  , y=N_y_offset*y_max
   , cex = 1
   , col = threegroupcolors
-  , paste(Nice_Plot$n,sep="")  # again, the sample size 'n' is directly extracted from the plot
+  , paste("N=", Nice_Plot$n, sep="")  # again, the sample size 'n' is directly extracted from the plot
 )
+
+mtext("additional margin label", side=2, line=2, las=0)
+mtext("additional margin label on outside", side=1, line=5, las=0, xpd = TRUE)
 
 # Represent the raw data as well, especially for mid- to low sample sizes.
 stripchart(avgsize ~ treatment
@@ -95,6 +99,8 @@ stripchart(avgsize ~ treatment
            , jitter = 0.2
            , vertical = TRUE
 )
+
+
 
 
 
