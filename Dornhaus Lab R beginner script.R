@@ -31,12 +31,32 @@ N_y_offset <- 0.95 # This puts sample size numbers 5% below max, for example
 
 
 # IMPORT ----------------------------------
+
+# A common problem when reading any files is that you must make sure
+# that R uses the folder you want as 'working directory'. You can
+# pick the working directory from the 'Session' menu above; or 
+# you can write the path here in the code, e.g.:
+setwd("C:/Users/dornh/Dropbox/Github/teachingR")
+# But note that this is a little problematic as this detailed path
+# would never work on someone else's computer. Instead,
+# you can also use
+setwd("../teachingR")
+# or similar ... the ".." means 'go up one directory level' and then
+# it will go into the folder to the right of the "/". 
 MyData <- read.table("bb col data.csv"
                      , header=T
                      , row.names=1
                      , sep = ","
                      , dec = "."
                      )
+# Or you can load a .csv file from Google Drive:
+path <- "C:/Users/dornh/Dropbox/TEACHING/ECOL496G 596G Spring2025 Networks/network datasets/Memmott pollinator network/"
+MyDatafromGoogleDrive <- read.table(paste(path, "memmott_1999.csv", sep = ""), header = TRUE, sep = ",")
+
+# Or directly from a Google Sheet:
+MyDatafromGoogleSheets <- read.csv("https://docs.google.com/spreadsheets/d/1K2D2rH770iDfZzlwakHK89bwvoPqWDLaHbVNsanJFX8/gviz/tq?tqx=out:csv")
+# Or directly from github:
+MyDatafromGithub <- read.csv("https://raw.githubusercontent.com/shannonmcwaters/Directed-exploration/refs/heads/main/Maze%20Data%20Raw")
 
 
 # GRAPHING THINGS ------------------------------
