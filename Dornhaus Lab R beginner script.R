@@ -188,6 +188,11 @@ stripchart(avgsize ~ treatment
 
 
 ### SCATTERPLOTS ### ---------------
+
+### NOT DONE !!!!!!!!!!!!!!!! -------------
+
+# working on this 
+
 graph_data <- MyData
 # We can even upgrade this to a multi-panel plot. For this we can use another par()
 # setting (e.g. mfrow=c(2,2)), or for more control use 'layout()'.
@@ -250,5 +255,5 @@ boxplot(table(stdevsize)
         , horizontal=TRUE
 )
 
-
+### SCATTERPLOT CODE IS NOT DONE!!
 
