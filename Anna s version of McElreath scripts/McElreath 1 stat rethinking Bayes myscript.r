@@ -67,7 +67,7 @@ no_of_successes <- 6
 
 # Here this is the probability density for a binomial function
 # which is what you need when drawing with replacement
-dbinom(no_of_successes, size=no_of_samples , prob=0.5 )
+dbinom(no_of_successes, size=no_of_samples, prob=0.5)
 
 ## QUOTE:
 # "And this is Bayes’ theorem: It says that the probability of any particular value of p, considering
