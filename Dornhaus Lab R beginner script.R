@@ -224,6 +224,19 @@ plot(avgsize ~ stdevsize
      , xlab = "X-Axis Label [units]"
      , ylab = "Y-Axis Label [units]"
 )
+# In some cases, it makes sense to label points individually. 
+label_xoffset <- -max(graph_data$stdevsize) * 0.002 # you have to play around with 
+# this to see what looks good. I do it relative to the x-axis for comparability
+# between plots. 
+label_yoffset <- 0
+text(graph_data$stdevsize + label_xoffset # x coordinates of labels
+     , graph_data$avgsize + label_yoffset # y coordinates of labels
+     #     , labels = V(dolphins)$name # text in labels
+     , cex = 0.5 # size of text
+     #     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))] # colors as before
+     , pos = 4 # make the text left aligned (to the right of given coordinates)
+)
+
 
 # Let's try something like this with a larger dataset:
 graph_data <- EnormousDataLocal
@@ -253,11 +266,13 @@ plot(collected.resource.units ~ average.exploited.resource.distance
 )
 # Here I used 'number.of.clusters' to define the size of the points as well. 
 
-### The below code works but hasn't got cool colors etc in it yet -------------
+# We can even upgrade this to a multi-panel plot, if we want a boxplot on the sides
+# to show the distribution of values. This makes some sense here also since the points
+# overlap so much it is hard to tell how many are where.
+graph_data <- EnormousDataLocal
 
-graph_data <- MyDataLocalFolder
-# We can even upgrade this to a multi-panel plot. For this we can use another par()
-# setting (e.g. mfrow=c(2,2)), or for more control use 'layout()'.
+# For this we can use another par() setting (e.g. mfrow=c(2,2)), or for more 
+# control use 'layout()'.
 layout(matrix(c(1,2,0,3), 2, 2, byrow = T), widths=c(1,5), 
        heights=c(5,1)) 
 # This gives us a four-panel plot; the plots will be inserted into the panels in 
@@ -275,47 +290,43 @@ layout(matrix(c(1,2,0,3), 2, 2, byrow = T), widths=c(1,5),
 # but narrow, and plot number 3 is wide and short. The cell in bottom left doesn't
 # have a plot but is both short and narrow. 
 
+# See above for the color strategy here. 
+num_colors <- 15
+colorgradient <- magma(num_colors, alpha = 0.6)
+graph_data$colors <- cut(graph_data$total.agent.timesteps.spent.searching, breaks = num_colors)
+
 # Various other format adjustments
 par(oma = c(0,0,0,0), mgp=c(3, 1, 0), las=1)
 
 # Panel 1: Distribution of y-values
 par(mar = c(4,0,1,0)) # bottom, left, top, right
-boxplot(graph_data$avgsize
+boxplot(graph_data$collected.resource.units
         , xaxt = 'n'
         , yaxt = 'n'
         , frame = FALSE
         , range = 0
-#        , col = color_distributions
+        , col = twogroupcolors[1]
 )
 
 # Panel 2: The main graph, a scatterplot
 par(mar = c(4,4,1,2)) # bottom, left, top, right
-plot(avgsize ~ stdevsize 
+plot(collected.resource.units ~ average.exploited.resource.distance
      , data = graph_data
      , pch = 19 # set point shape
-#     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))]
-     # This is a little longer than it would be if we just had used the subsets of data. I like it
-     # better because it keeps flexibly using the entire dataset. 
-     , cex = 1.5 # point size - 1 is default
-     , xlab = "X-Axis Label"
-     , ylab = "Y-Axis Label"
+     , col = colorgradient[graph_data$colors]
+     , cex = sapply(as.character(graph_data$number.of.clusters), function(x) switch(x, "5"=0.5, "10"=1, "50"=1.5, "100"=2))
+     , xlab = "X-Axis Label [units]"
+     , ylab = "Y-Axis Label [units]"
 )
-label_xoffset <- -max(graph_data$stdevsize) * 0.002 # you have to play around with 
-# this to see what looks good. I do it relative to the x-axis for comparability
-# between plots. 
-label_yoffset <- 0
-text(graph_data$stdevsize + label_xoffset # x coordinates of labels
-     , graph_data$avgsize + label_yoffset # y coordinates of labels
-#     , labels = V(dolphins)$name # text in labels
-     , cex = 0.5 # size of text
-#     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))] # colors as before
-     , pos = 4 # make the text left aligned (to the right of given coordinates)
+
+legend("topright"
+       , title = "Time searching"
+       , c(paste("t=", min(graph_data$total.agent.timesteps.spent.searching))
+           , paste("t=", median(graph_data$total.agent.timesteps.spent.searching))
+           , paste("t=", max(graph_data$total.agent.timesteps.spent.searching)))
+       , col = c(colorgradient[1], colorgradient[round(num_colors/2)], colorgradient[num_colors])
+       , pch = 19 # you'll normally match the shape of the scatterplot points
 )
-#legend("topleft"
-#       , c("Male", "Female", "Unknown")
-#       , col = colors_dolphinsex
-#       , pch = 19 # you'll normally match the shape of the scatterplot points
-#)
 
 # Panel 3: empty
 # We put a 0 in the layout matrix there, so R should know we don't want this to be used
@@ -323,14 +334,23 @@ text(graph_data$stdevsize + label_xoffset # x coordinates of labels
 
 # Panel 4: Boxplot of x-axis values
 par(mar = c(0,4,0,2)) # bottom, left, top, right
-boxplot(graph_data$stdevsize
-        , xaxt = 'n'
+boxplot(graph_data$average.exploited.resource.distance
+        , xaxt = 'n' # This deletes this axis
         #, yaxt = 'n'
         , frame = FALSE
         , range = 0
-#        , col = color_distributions
+        , col = twogroupcolors[2]
         , horizontal=TRUE
 )
 
-### SCATTERPLOT CODE IS NOT DONE!!
+# Note that if you are doing a graph of this type, I would
+# - make sure the boxplot colors are not the same as the scatterplot points but somehow
+# make sense in the context. Possibly better to leave the boxplots white.
+# - make sure the color gradient doesn't have a very light yellow like this one that
+# is nearly invisible when transparent (see third point in legend); or make sure the point
+# in the legend does not have transparency. 
+# - one could also squish the boxplots on the sides more by changing the heights and widths
+# argument in layout, to get rid of more of the white space.
+
+
 
