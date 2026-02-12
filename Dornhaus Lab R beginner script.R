@@ -35,7 +35,7 @@ library(sjPlot) # for linear models output tables
 
 
 # Graphics setup -----------------------------
-no_categories <- 6
+no_categories <- 15
 ## Colorpalette
 twogroupcolors <- c("#5a9a8f", "#7b6ea8")
 threegroupcolors <- viridis(3)
@@ -206,9 +206,54 @@ stripchart(avgsize ~ treatment
 # You may or may not need all the features included here. But at minimum, you want
 # fairly large points, in almost all cases make them slightly transparent, and
 # really clear axis labels. 
+# These are just the standard margins I use - you could have something 
+# else - but I want to make sure they are reset here in case you were experimenting
+# with it before. 
+par(oma = c(0,0,0,0), mar = c(4,4,1,1), mgp=c(3, 1, 0), las=1) 
+# bottom, left, top, right
+par(mfrow=c(1,1))
+graph_data <- MyDataLocalFolder
+plot(avgsize ~ stdevsize 
+     , data = graph_data
+     , pch = 19 # set point shape
+     , col = threegroupcolors[graph_data$treatmentcode]
+    #, col = threegroupcolors[sapply(graph_data$treatment, function(x) switch(x, "S"=1, "M"=2, "L"=3))]
+     # So you can use the first line if you have a numerical column you want to use
+     # to determine the color, or you use the second version if you have a set of label names. 
+     , cex = 1.5 # point size - 1 is default, but I like them bigger
+     , xlab = "X-Axis Label [units]"
+     , ylab = "Y-Axis Label [units]"
+)
 
+# Let's try something like this with a larger dataset:
+graph_data <- EnormousDataLocal
+# I'm going to redefine colors here to make sure it fits with this dataset -
+# in your own script, you would presumably do this in the graphics settings
+# at the top.
+num_colors <- 15
+# I also want the points to be semi-transparent. This is called 'alpha', which is 
+# a number between 0 (transparent) and 1 (totally opaque). There are different 
+# functions to do this, but it's also built-in in the viridis package color scales.
+colorgradient <- magma(num_colors, alpha = 0.6)
+# For that, I 'cut', i.e. categorize, a continuous variable into the number of 
+# colors I want to use. 
+graph_data$colors <- cut(graph_data$total.agent.timesteps.spent.searching, breaks = num_colors)
 
-### NOT DONE !!!!!!!!!!!!!!!! -------------
+# Ok now the actual graph code:
+par(oma = c(0,0,0,0), mar = c(4,4,1,1), mgp=c(3, 1, 0), las=1) 
+# bottom, left, top, right
+par(mfrow=c(1,1))
+plot(collected.resource.units ~ average.exploited.resource.distance
+     , data = graph_data
+     , pch = 19 # set point shape
+     , col = colorgradient[graph_data$colors]
+     , cex = sapply(as.character(graph_data$number.of.clusters), function(x) switch(x, "5"=0.5, "10"=1, "50"=1.5, "100"=2))
+     , xlab = "X-Axis Label [units]"
+     , ylab = "Y-Axis Label [units]"
+)
+# Here I used 'number.of.clusters' to define the size of the points as well. 
+
+### The below code works but hasn't got cool colors etc in it yet -------------
 
 graph_data <- MyDataLocalFolder
 # We can even upgrade this to a multi-panel plot. For this we can use another par()
