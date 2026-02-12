@@ -231,9 +231,8 @@ label_xoffset <- -max(graph_data$stdevsize) * 0.002 # you have to play around wi
 label_yoffset <- 0
 text(graph_data$stdevsize + label_xoffset # x coordinates of labels
      , graph_data$avgsize + label_yoffset # y coordinates of labels
-     #     , labels = V(dolphins)$name # text in labels
+     , labels = graph_data$queensproduced # text in labels
      , cex = 0.5 # size of text
-     #     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))] # colors as before
      , pos = 4 # make the text left aligned (to the right of given coordinates)
 )
 
