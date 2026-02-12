@@ -4,6 +4,18 @@
 
 # Paper reference: NONE
 
+### INTRO ----------------------
+
+# Note how you can collapse parts of the code by clicking on the small triangles
+# next to the line numbers. 
+# Do this now for all of them except the Intro if you like. 
+# This code starts with libraries and graphics setup, which are sections you 
+# should have in every script, in addition to the header above. 
+# You may initially have the libraries and graphics setup sections empty, and 
+# populate them as your code gets more complicated. Your header should never be
+# empty!! Also, make sure immediately that your code is synced to github, and 
+# don't have several undistinguished versions lying around. 
+
 ### Libraries ------------------
 #library(lme4) #needed for GLMMs
 #library(lmerTest) #needed for obtaining p-values in lmm
@@ -39,6 +51,9 @@ N_y_offset <- 0.95 # This puts sample size numbers 5% below max, for example
 
 
 # IMPORT ----------------------------------
+# This section has several methods for importing. Don't feel like you need to master
+# all of them at once - just pick whichever one is most important for you right 
+# now. 
 
 # A common problem when reading any files is that you must make sure
 # that R uses the folder you want as 'working directory'. You can
@@ -51,7 +66,7 @@ setwd("C:/Users/dornh/Dropbox/Github/teachingR")
 setwd("../teachingR")
 # or similar ... the ".." means 'go up one directory level' and then
 # it will go into the folder to the right of the "/". 
-MyData <- read.table("bb col data.csv"
+MyDataLocalFolder <- read.table("./example_data/bb col data.csv"
                      , header=T
                      , row.names=1
                      , sep = ","
@@ -82,7 +97,7 @@ MyDatafromGithub <- read.csv("https://raw.githubusercontent.com/shannonmcwaters/
 # it is anyway doubtful that this would make sense)
 files <- (Sys.glob("./example_data/similardatasheets/*.csv"))
 # Initiate a blank data frame
-EnormousData <- data.frame()
+EnormousDataLocal <- data.frame()
 # Read content of all files into a list
 listOfDataframes <- lapply(files, 
                              function(x) {
@@ -94,9 +109,9 @@ listOfDataframes <- lapply(files,
                              }
 )
 # Add all the rows from all the files together
-EnormousData <- do.call("bind_rows", listOfDataframes)
+EnormousDataLocal <- do.call("bind_rows", listOfDataframes)
 
-# Import a whole list of xls files
+# Import a whole list of xls files from Google Drive
 # Headache! Saving as csv is better...
 googledrivefolderfiles <- drive_ls(as_id("https://drive.google.com/drive/folders/1aZWvhJjgTH9QTrD9hV1LiPiOKFRxmH7x"))
 files2 <- googledrivefolderfiles$id
@@ -172,7 +187,7 @@ text(x=c(1:nbGroup)
 )
 
 mtext("additional margin label", side=2, line=2, las=0)
-mtext("additional margin label on outside", side=1, line=5, las=0, xpd = TRUE)
+mtext("additional margin label on outside", side=1, line=4, las=0, xpd = TRUE)
 
 # Represent the raw data as well, especially for mid- to low sample sizes.
 stripchart(avgsize ~ treatment
@@ -188,12 +203,14 @@ stripchart(avgsize ~ treatment
 
 
 ### SCATTERPLOTS ### ---------------
+# You may or may not need all the features included here. But at minimum, you want
+# fairly large points, in almost all cases make them slightly transparent, and
+# really clear axis labels. 
+
 
 ### NOT DONE !!!!!!!!!!!!!!!! -------------
 
-# working on this 
-
-graph_data <- MyData
+graph_data <- MyDataLocalFolder
 # We can even upgrade this to a multi-panel plot. For this we can use another par()
 # setting (e.g. mfrow=c(2,2)), or for more control use 'layout()'.
 layout(matrix(c(1,2,0,3), 2, 2, byrow = T), widths=c(1,5), 
@@ -215,6 +232,7 @@ boxplot(table(graph_data$avgsize)
 # Panel 2: The original graph
 par(mar = c(4,4,1,2)) # bottom, left, top, right
 plot(avgsize ~ stdevsize # we could have stuck with the 
+     , data = graph_data
      # subsets above, but this is a little cleaner - note that we still assign
      # colors by the variable $sex in the node list
      , pch = 19 # set point shape

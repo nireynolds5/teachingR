@@ -214,6 +214,7 @@ globe.qa <- function(W, L) {
 }
 
 # Let's try it:
+# (Note this only runs if you did in fact plot something previously with the grid function above)
 globe.qa(5, 3)
 # The purple line is the (cheating) mathematical known approximation of the posterior
 # (hard to see because essentially exactly on the black).
@@ -279,7 +280,7 @@ mtext(paste(grid_size, "points in grid,", n_samples_mcmc, "points in MCMC"))
 # The grid method gives just estimates for a limited set of points; the quadratic
 # method gives us an entire, smooth posterior; and the MCMC method essentially gives
 # us a whole bunch of wiggly lines that circumscribe the 'true' posterior.
-# But they all agree pretty well on the most probably proportion of water on the globe.
+# But they all agree pretty well on the most probable proportion of water on the globe.
 # Side note: a uniform probability density distribution has the value 1 at all
 # x values from 0 to 1, thus summing up to an area of 1.
 
@@ -370,9 +371,9 @@ mtext(paste(grid_size, "points in grid,", n_samples_mcmc, "points in MCMC"))
 # depend on exactly what the 'story' is. And this is indeed a danger in any statistical
 # approach. 
 
-# In his words - here the word 'model' is embodying the 'story' of data generation
+# In his words (here the word 'model' is embodying the 'story' of data generation
 # primarily, and also the Bayesian inference; and the 'small world' is again
-# the world of the data story, whereas the 'large world' is the real world:
+# the world of the data story, whereas the 'large world' is the real world):
 # "For now, note that the goal is not to test the truth value of the model’s 
 # assumptions. We know the model’s assumptions are never exactly right, in the 
 # sense of matching the true data generating process. Therefore there’s no 
@@ -722,7 +723,7 @@ points(p_grid, likelihood * 0.02/max(likelihood)
 
 
 
-### 4 line version --------------------
+### 4 lines of code version --------------------
 # of the entire model with grid approx from chapter 4
 w <- 6; n <- 9;
 p_grid <- seq(from=0,to=1,length.out=100)
