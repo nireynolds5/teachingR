@@ -217,59 +217,73 @@ layout(matrix(c(1,2,0,3), 2, 2, byrow = T), widths=c(1,5),
        heights=c(5,1)) 
 # This gives us a four-panel plot; the plots will be inserted into the panels in 
 # order by row.
+# How: matrix() gives the table, it has 4 entries, so 4-panel plot. 
+# byrow = T means we are labeling the 4 panels by row, i.e. first the first row, 
+# then the second, etc.
+# Inside matrix(), the four numbers are the order in which plots below will be 
+# inserted into the four panels: first the first one (top left), then the second 
+# (top right) then the bottom right panel is empty, then the bottom left is number 
+# 3. So we expect a total of three plots below. 
+# heights() specifies the heights of the two rows. The first row is much taller than
+# the second row. widths() specifies the width of the columns: the second column is
+# much wider. So plot number 2 will be both wide and high, plot number one will be tall 
+# but narrow, and plot number 3 is wide and short. The cell in bottom left doesn't
+# have a plot but is both short and narrow. 
+
 # Various other format adjustments
 par(oma = c(0,0,0,0), mgp=c(3, 1, 0), las=1)
-# Panel 1:
+
+# Panel 1: Distribution of y-values
 par(mar = c(4,0,1,0)) # bottom, left, top, right
-boxplot(table(graph_data$avgsize)
-        , data = graph_data
+boxplot(graph_data$avgsize
         , xaxt = 'n'
         , yaxt = 'n'
         , frame = FALSE
         , range = 0
 #        , col = color_distributions
 )
-# Panel 2: The original graph
+
+# Panel 2: The main graph, a scatterplot
 par(mar = c(4,4,1,2)) # bottom, left, top, right
-plot(avgsize ~ stdevsize # we could have stuck with the 
+plot(avgsize ~ stdevsize 
      , data = graph_data
-     # subsets above, but this is a little cleaner - note that we still assign
-     # colors by the variable $sex in the node list
      , pch = 19 # set point shape
 #     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))]
      # This is a little longer than it would be if we just had used the subsets of data. I like it
      # better because it keeps flexibly using the entire dataset. 
      , cex = 1.5 # point size - 1 is default
-     , xlab = "Dolphin Closeness Measure"
-     , ylab = "Dolphin Betweenness Measure"
+     , xlab = "X-Axis Label"
+     , ylab = "Y-Axis Label"
 )
-label_xoffset <- -max(closeness(dolphins)) * 0.002 # you have to play around with 
+label_xoffset <- -max(graph_data$stdevsize) * 0.002 # you have to play around with 
 # this to see what looks good. I do it relative to the x-axis for comparability
 # between plots. 
 label_yoffset <- 0
-text(closeness(dolphins) + label_xoffset # x coordinates of labels
-     , betweenness(dolphins) + label_yoffset # y coordinates of labels
-     , labels = V(dolphins)$name # text in labels
+text(graph_data$stdevsize + label_xoffset # x coordinates of labels
+     , graph_data$avgsize + label_yoffset # y coordinates of labels
+#     , labels = V(dolphins)$name # text in labels
      , cex = 0.5 # size of text
-     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))] # colors as before
+#     , col = colors_dolphinsex[sapply(V(dolphins)$sex, function(x) switch(x, "M"=1, "F"=2, "UNKNOWN"=3))] # colors as before
      , pos = 4 # make the text left aligned (to the right of given coordinates)
 )
-legend("topleft"
-       , c("Male", "Female", "Unknown")
-       , col = colors_dolphinsex
-       , pch = 19 # you'll normally match the shape of the scatterplot points
-)
+#legend("topleft"
+#       , c("Male", "Female", "Unknown")
+#       , col = colors_dolphinsex
+#       , pch = 19 # you'll normally match the shape of the scatterplot points
+#)
+
 # Panel 3: empty
 # We put a 0 in the layout matrix there, so R should know we don't want this to be used
-# Panel 4: boxplot of x-axis distribution
+# One could put a legend or text here if needed.
+
+# Panel 4: Boxplot of x-axis values
 par(mar = c(0,4,0,2)) # bottom, left, top, right
-boxplot(table(stdevsize)
-        , data = graph_data
+boxplot(graph_data$stdevsize
         , xaxt = 'n'
         #, yaxt = 'n'
         , frame = FALSE
         , range = 0
-        , col = color_distributions
+#        , col = color_distributions
         , horizontal=TRUE
 )
 
