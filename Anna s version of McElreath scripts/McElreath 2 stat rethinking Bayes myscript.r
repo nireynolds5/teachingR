@@ -150,6 +150,7 @@ post <- expand.grid(mu=mu.list, sigma=sigma.list)
 # How often will you get this height given each possible mu and sigma
 post$LL <- sapply(1:nrow(post), function(i) sum(
   dnorm(d2$height, post$mu[i], post$sigma[i], log=TRUE)))
+# Note this can take a little while to calculate! Give it a minute. 
 
 # Product of prior and likelihood
 post$prod <- post$LL + dnorm(post$mu, 178, 20, TRUE) +
