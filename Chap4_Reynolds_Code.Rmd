@@ -1,0 +1,114 @@
+---
+title: "chp4_Coding"
+output: html_document
+date: "2026-02-18"
+---
+
+starting page81
+
+Gaussian model of height -Data prep
+```{r}
+library(rethinking)
+data("Howell1")
+d<- Howell1
+precis(d) #summary function, used to summarize posterior distributions later in book
+#the average of this data is known, but want to create a regression to model the height.
+
+#adult height only
+d2 <- d[d$age >=18,]
+dens(d2$height) #plots the height of people
+
+curve( dnorm(x, 178, 20), from=100, to=250) # mean prior
+curve( dunif(x, 0 ,50), from=-10, to=60) #deviations prior
+
+```
+
+
+Joint prior distrubutions
+```{r}
+#quick way to simulate heights from the prior
+sample_mu <-rnorm(1e4, 178, 20)
+sample_sigma <- runif(1e4, 0, 50)
+prior_h <-rnorm(1e4, sample_mu, sample_sigma)
+dens(prior_h)
+
+#example of less informative prior)
+sample_mu <- rnorm(1e4, 178, 100)
+prior_h <-rnorm(1e4, sample_mu, sample_sigma)
+dens(prior_h)
+
+```
+
+
+**Come back to do pg 87-90**
+
+
+```{r}
+library(rethinking)
+data("Howell1")
+d<- Howell1
+d2 <- d[d$age >=18,]
+
+flist <- alist(
+  height ~ dnorm(mu, sigma),
+  mu ~ dnorm(178, 20),
+  sigma ~ dunif(0,50)
+)
+
+m4.1 <-quap(flist, data=d2)
+precis(m4.1)
+
+
+start <-list(
+  mu=mean(d2$height),
+  sigma=sd(d2$height))
+
+m4.1 <-quap(flist, data=d2, start=start)
+precis(m4.1)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
