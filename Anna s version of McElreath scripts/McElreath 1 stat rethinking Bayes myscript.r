@@ -13,7 +13,7 @@
 library(rstan)
 #install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
 
-## Then install 'rethinking' package for the book-specific functions.
+# Then install 'rethinking' package for the book-specific functions.
 
 # From 2019 book:
 #install.packages(c("coda","mvtnorm","devtools"))
@@ -67,7 +67,7 @@ no_of_successes <- 6
 
 # Here this is the probability density for a binomial function
 # which is what you need when drawing with replacement
-dbinom(no_of_successes, size=no_of_samples , prob=0.5 )
+binomal<-dbinom(no_of_successes, size=no_of_samples , prob=0.5 ) #out put is 0.1640625, the probabilities of getting 6/9 flip coin
 
 ## QUOTE:
 # "And this is Bayes’ theorem: It says that the probability of any particular value of p, considering
@@ -76,7 +76,7 @@ dbinom(no_of_successes, size=no_of_samples , prob=0.5 )
 # probability of the data. In word form:
 #    Posterior =
 #    Probability of the data × Prior / Average probability of the data   "
-
+#**what is the prob of getting "x" sample at certain point**
 # The thing we are dividing by is just to standardize the integral over the posterior to 1.
 # QUOTE AGAIN:
 # "The average probability of the data, Pr(W, L), can be confusing. It is commonly called the
@@ -111,13 +111,13 @@ dbinom(no_of_successes, size=no_of_samples , prob=0.5 )
 # We define three functions to estimate the posterior in three ways.
 
 #### (1) Simple Grid approximation: -------------
-grid_approx <- function(W, L, grid_size=10) {
+grid_approx <- function(W, L, grid_size=10) { #W is water, L is land, grid_size is the grid, can change in fomrat
 # define grid of possible hypotheses/values of thing to be estimated
 p_grid <- seq(from=0 , to=1 , length.out=grid_size)
 # define prior across all hypotheses
-prior <- rep(1 , grid_size)
+#prior <- rep(1 , grid_size)
 # Alternative priors:
-#prior <- ifelse( p_grid < 0.5 , 0 , 1 )
+prior <- ifelse( p_grid < 0.5 , 0 , 1 )
 #prior <- exp( -5*abs( p_grid - 0.5 ) )
 # Standardizing just for the sake of the graph
 prior <- prior/sum(prior)
